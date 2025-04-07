@@ -22,6 +22,8 @@ def k8s_apply(prereqs: [], context: "admin@omicron", task_dir: nil)
   task_dir ||= File.dirname(caller_locations.first.path)
 
   task "apply-#{context}" => prereqs do
+    validate_tool("kubectl")
+
     Dir.chdir(task_dir) do
       sh "kubectl --context #{context} apply -f app.yaml"
     end
@@ -29,6 +31,13 @@ def k8s_apply(prereqs: [], context: "admin@omicron", task_dir: nil)
 end
 
 def talhelper_cmd(command)
+  validate_tool("talhelper")
   generated = `talhelper gencommand #{command}`
   sh generated
+end
+
+def validate_tool(tool)
+  unless system("which #{tool}")
+    raise "Tool required but not found: #{tool}"
+  end
 end

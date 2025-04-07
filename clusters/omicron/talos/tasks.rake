@@ -1,7 +1,10 @@
 task :setup do
   Dir.chdir(File.dirname(__FILE__)) do
+    validate_tool("op")
+    validate_tool("talhelper")
+
     sh "op document get --vault fmycvdzmeyvbndk7s7pjyrebtq zjr2jsjcsptwwxjqscu2r4wbze > clusterconfig/talsecret.yaml"
-    sh "talhelper genconfig --secret-file clusterconfig/talsecret.yaml --no-gitignore"      
+    sh "talhelper genconfig --secret-file clusterconfig/talsecret.yaml --no-gitignore"
     talhelper_cmd("kubeconfig --extra-flags '--force'")
   end
 end
@@ -24,6 +27,7 @@ task :upgrade => :setup do
 end  
 
 task :dashboard => :setup do
+  validate_tool("taloctl")
   Dir.chdir(File.dirname(__FILE__)) do
     cmd = "talosctl dashboard --talosconfig=./clusterconfig/talosconfig"
     puts cmd

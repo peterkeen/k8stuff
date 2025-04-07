@@ -1,4 +1,6 @@
 task :setup => "clusters:omicron:talos:setup" do
+  validate_tool("op")
+
   Dir.chdir(File.dirname(__FILE__)) do
     unless File.exist?(".secrets/1password-token")
       sh "op connect token create Kubernetes --server omicron --vault fmycvdzmeyvbndk7s7pjyrebtq > .secrets/1password-token"
@@ -11,6 +13,9 @@ task :setup => "clusters:omicron:talos:setup" do
 end
 
 task :apply => :setup do
+  validate_tool("op")
+  validate_tool("helmfile")
+
   Dir.chdir(File.dirname(__FILE__)) do
     sh "helmfile init"
     sh "op inject -i helmfile.yaml | helmfile apply -f -"

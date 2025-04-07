@@ -21,3 +21,7 @@ end
 task :dump_tasks do
   pp Rake.application.tasks
 end
+
+task :brew do
+  sh "brew bundle"
+end
