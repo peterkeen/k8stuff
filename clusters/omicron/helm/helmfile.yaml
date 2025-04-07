@@ -7,6 +7,8 @@ repositories:
   url: https://metallb.github.io/metallb
 - name: ingress-nginx
   url: https://kubernetes.github.io/ingress-nginx
+- name: keel
+  url: https://charts.keel.sh
 
 releases:
 - name: connect
@@ -62,3 +64,7 @@ releases:
 - name: ingress-nginx
   namespace: ingress-nginx
   chart: ingress-nginx/ingress-nginx
+
+- name: keel
+  namespace: kube-system
+  chart: keel/keel

@@ -1,4 +1,4 @@
-def build_docker(prereqs: [], repo_base: "ghcr.io/keenfamily-us/infra", task_dir: nil)
+def build_docker(prereqs: [], repo_base: "ghcr.io/peterkeen/k8stuff", task_dir: nil)
   task_dir ||= File.dirname(caller_locations.first.path)
 
   build_tag = "#{repo_base}/#{task_dir}:latest"
