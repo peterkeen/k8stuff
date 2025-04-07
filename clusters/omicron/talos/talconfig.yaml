@@ -1,0 +1,55 @@
+---
+clusterName: omicron
+talosVersion: 1.9.5
+kubernetesVersion: 1.32.3
+endpoint: https://10.73.95.69:6443
+domain: omicron.keen.land
+patches:
+  - |-
+    machine:
+      network:
+        kubespan:
+          enabled: true
+          
+  - |-
+    cluster:
+      discovery:
+        enabled: true
+        registries:
+          kubernetes:
+            disabled: true
+          service: {}
+
+controlPlane:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/qemu-guest-agent
+
+worker:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/qemu-guest-agent          
+
+nodes:
+  - hostname: hypnotoad-control
+    ipAddress: 10.73.95.69
+    installDisk: /dev/sda
+    controlPlane: true
+
+  - hostname: crushinator-control
+    ipAddress: 10.73.95.75
+    installDisk: /dev/sda
+    controlPlane: true
+
+  - hostname: lrrr-control
+    ipAddress: 10.73.95.209
+    installDisk: /dev/sda
+    controlPlane: true
+
+  - hostname: hypnotoad-worker
+    ipAddress: 10.73.95.207
+    installDisk: /dev/sda

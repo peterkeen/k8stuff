@@ -1,0 +1,20 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: proxy-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.10.10.11-10.10.10.200
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: proxy-adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - proxy-pool
+  nodeSelectors:
+    - matchLabels:
+        metallb: "true"

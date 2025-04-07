@@ -1,0 +1,69 @@
+repositories:
+- name: kubernetes-dashboard
+  url: https://kubernetes.github.io/dashboard/
+- name: democratic-csi
+  url: https://democratic-csi.github.io/charts/
+- name: 1password
+  url: https://1password.github.io/connect-helm-charts/
+- name: metallb
+  url: https://metallb.github.io/metallb
+- name: dashboard
+  url: https://kubernetes.github.io/dashboard/
+- name: ingress-nginx
+  url: https://kubernetes.github.io/ingress-nginx
+  
+releases:
+- name: connect
+  namespace: onepassword
+  chart: 1password/connect
+  set:
+    - name: operator.create
+      value: true
+    - name: operator.token.value
+      file: .secrets/1password-token
+    - name: connect.credentials
+      file: .secrets/1password-credentials.json
+
+- name: tailscale-operator
+  namespace: tailscale
+  chart: tailscale/tailscale-operator
+  setString:
+    - name: oauth.clientId
+      value: "op://fmycvdzmeyvbndk7s7pjyrebtq/e3wesi6ceugqjhpuctsa3qvrcu/username"
+    - name: oauth.clientSecret
+      value: "op://fmycvdzmeyvbndk7s7pjyrebtq/e3wesi6ceugqjhpuctsa3qvrcu/credential"
+    - name: apiServerProxyConfig.mode
+      value: "true"
+
+- name: metallb
+  namespace: metallb-system
+  chart: metallb/metallb
+  values:
+    - metallb/values.yaml
+  hooks:
+    - events: ["postsync"]
+      showlogs: true
+      command: "kubectl"
+      args: ["apply", "-f", "metallb/pool.yaml"]
+    - events: ["postuninstall"]
+      showlogs: true
+      command: "kubectl"
+      args: ["delete", "-f", "metallb/pool.yaml"]
+
+- name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  chart: kubernetes-dashboard/kubernetes-dashboard
+  hooks:
+    - events: ["postsync"]
+      showlogs: true
+      command: "kubectl"
+      args: ["apply", "-f", "dashboard/resources.yaml"]
+    - events: ["postuninstall"]
+      showlogs: true
+      command: "kubectl"
+      args: ["delete", "-f", "dashboard/resources.yaml"]
+
+- name: ingress-nginx
+  namespace: ingress-nginx
+  chart: ingress-nginx/ingress-nginx
+  
