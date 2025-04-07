@@ -27,3 +27,8 @@ def k8s_apply(prereqs: [], context: "admin@omicron", task_dir: nil)
     end
   end
 end
+
+def talhelper_cmd(command)
+  generated = `talhelper gencommand #{command}`
+  sh generated
+end

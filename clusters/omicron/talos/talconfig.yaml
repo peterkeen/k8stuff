@@ -53,3 +53,5 @@ nodes:
   - hostname: hypnotoad-worker
     ipAddress: 10.73.95.207
     installDisk: /dev/sda
+    labels:
+      metallb: true
