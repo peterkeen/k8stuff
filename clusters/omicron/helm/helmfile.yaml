@@ -9,6 +9,8 @@ repositories:
   url: https://kubernetes.github.io/ingress-nginx
 - name: keel
   url: https://charts.keel.sh
+- name: tailscale
+  url: https://pkgs.tailscale.com/helmcharts
 
 releases:
 - name: connect

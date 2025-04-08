@@ -16,6 +16,7 @@ metadata:
     keel.sh/trigger: poll
     keel.sh/pollSchedule: "@every 1m"
     keel.sh/approvals: "0"
+    operator.1password.io/auto-restart: "true"
 spec:
   replicas: 1
   selector:
