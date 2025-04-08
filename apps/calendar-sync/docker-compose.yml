@@ -1,7 +1,0 @@
-services:
-  gdl-calendar-sync:
-    container_name: gdl-calendar-sync
-    build: .
-    restart: unless-stopped
-    volumes:
-      - /data/gdl-calendar-sync:/data
