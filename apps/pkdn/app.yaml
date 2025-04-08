@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pkdn
+  labels:
+    app: pkdn
+  annotations:
+    keel.sh/policy: "force"
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 5m"
+    keel.sh/approvals: "0"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pkdn
+  template:
+    metadata:
+      labels:
+        app: pkdn
+    spec:
+      containers:
+        - name: pkdn
+          image: ghcr.io/peterkeen/site:nightly
+      imagePullSecrets:
+        - name: ghcr.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pkdn
+spec:
+  selector:
+    app: pkdn
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pkdn
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: www.petekeen.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pkdn
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pkdn-ts
+  annotations:
+    tailscale.com/tags: "tag:production"
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - pkdn
+  defaultBackend:
+    service:
+      name: pkdn
+      port:
+        number: 8000
