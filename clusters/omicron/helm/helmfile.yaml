@@ -67,6 +67,12 @@ releases:
   namespace: ingress-nginx
   chart: ingress-nginx/ingress-nginx
 
+- name: ingress-nginx-public
+  namespace: ingress-nginx-public
+  chart: ingress-nginx/ingress-nginx
+  values:
+    - ingress-nginx-public/values.yaml
+
 - name: keel
   namespace: kube-system
   chart: keel/keel

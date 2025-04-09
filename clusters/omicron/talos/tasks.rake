@@ -13,7 +13,7 @@ task :apply => :setup do
   Dir.chdir(File.dirname(__FILE__)) do
     cmd = %w[apply]
     if ENV["reboot"] == "true"
-      cmd << '--extra-args="--mode=reboot"'
+      cmd << '--extra-flags="--mode=reboot"'
     end
 
     talhelper_cmd(cmd.join(" "))
@@ -27,7 +27,7 @@ task :upgrade => :setup do
 end  
 
 task :dashboard => :setup do
-  validate_tool("taloctl")
+  validate_tool("talosctl")
   Dir.chdir(File.dirname(__FILE__)) do
     cmd = "talosctl dashboard --talosconfig=./clusterconfig/talosconfig"
     puts cmd

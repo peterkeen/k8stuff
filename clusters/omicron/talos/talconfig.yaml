@@ -10,7 +10,8 @@ patches:
       network:
         kubespan:
           enabled: true
-          
+          advertiseKubernetesNetworks: true
+
   - |-
     cluster:
       discovery:
@@ -26,13 +27,14 @@ controlPlane:
       systemExtensions:
         officialExtensions:
           - siderolabs/qemu-guest-agent
-
-worker:
-  schematic:
-    customization:
-      systemExtensions:
-        officialExtensions:
-          - siderolabs/qemu-guest-agent          
+  machine:
+    features:
+      kubernetesTalosAPIAccess:
+        enabled: true
+        allowedRoles:
+          - os:reader
+        allowedKubernetesNamespaces:
+          - kube-system
 
 nodes:
   - hostname: hypnotoad-control
@@ -55,3 +57,14 @@ nodes:
     installDisk: /dev/sda
     labels:
       metallb: true
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/qemu-guest-agent
+
+  - hostname: cloud-ord-1
+    ipAddress: 144.202.49.178
+    installDisk: /dev/vda
+    labels:
+      cloud: true

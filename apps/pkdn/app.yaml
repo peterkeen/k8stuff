@@ -53,3 +53,18 @@ spec:
       name: pkdn
       port:
         number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pkdn-public
+spec:
+  ingressClassName: nginx-public
+  tls:
+    - hosts:
+        - public.petekeen.net
+  defaultBackend:
+    service:
+      name: pkdn
+      port:
+        number: 8000
