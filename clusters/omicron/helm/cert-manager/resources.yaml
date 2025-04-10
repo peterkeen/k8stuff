@@ -1,0 +1,30 @@
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: cert-manager-credentials
+  namespace: cert-manager
+spec:
+  itemPath: "vaults/fmycvdzmeyvbndk7s7pjyrebtq/items/umbys4jfnh6k27u2isqdimhz6i"
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+spec:
+  acme:
+    email: pete@petekeen.net
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+    - dns01:
+        route53:
+          region: us-east-1
+          accessKeyIDSecretRef:
+            name: cert-manager-credentials
+            key: AWS_ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: cert-manager-credentials
+            key: AWS_SECRET_ACCESS_KEY
+

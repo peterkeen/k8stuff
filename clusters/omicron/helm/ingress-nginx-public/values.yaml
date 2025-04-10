@@ -2,10 +2,14 @@ controller:
   kind: DaemonSet
   hostPort:
     enabled: true
+  reportNodeInternalIp: true
   ingressClassResource:
     name: nginx-public
+    controllerValue: k8s.io/ingress-nginx-public
   nodeSelector:
     cloud: "true"
   labels:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/enforce-version: latest
+  publishService:
+    enabled: false

@@ -11,6 +11,10 @@ repositories:
   url: https://charts.keel.sh
 - name: tailscale
   url: https://pkgs.tailscale.com/helmcharts
+- name: jetstack
+  url: https://charts.jetstack.io
+- name: external-dns
+  url: https://kubernetes-sigs.github.io/external-dns/
 
 releases:
 - name: connect
@@ -76,3 +80,14 @@ releases:
 - name: keel
   namespace: kube-system
   chart: keel/keel
+
+- name: cert-manager
+  namespace: cert-manager
+  chart: jetstack/cert-manager
+  set:
+    - name: crds.enabled
+      value: true
+
+- name: external-dns
+  namespace: external-dns
+  chart: external-dns/external-dns

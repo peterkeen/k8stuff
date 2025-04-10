@@ -58,13 +58,24 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: pkdn-public
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   ingressClassName: nginx-public
   tls:
     - hosts:
-        - public.petekeen.net
-  defaultBackend:
-    service:
-      name: pkdn
-      port:
-        number: 8000
+        - www.petekeen.net
+        - petekeen.net
+      secretName: public3-pkdn-ingress-cert
+  rules:
+    - host: www.petekeen.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pkdn
+                port:
+                  number: 8000

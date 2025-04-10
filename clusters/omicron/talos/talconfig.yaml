@@ -11,9 +11,17 @@ patches:
         kubespan:
           enabled: true
           advertiseKubernetesNetworks: true
+      kubelet:
+        extraArgs:
+          cloud-provider: external
+          rotate-server-certificates: true
 
   - |-
     cluster:
+      externalCloudProvider:
+        enabled: true
+        manifests:
+          - https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml      
       discovery:
         enabled: true
         registries:
@@ -27,30 +35,46 @@ controlPlane:
       systemExtensions:
         officialExtensions:
           - siderolabs/qemu-guest-agent
-  machine:
-    features:
-      kubernetesTalosAPIAccess:
-        enabled: true
-        allowedRoles:
-          - os:reader
-        allowedKubernetesNamespaces:
-          - kube-system
 
 nodes:
   - hostname: hypnotoad-control
     ipAddress: 10.73.95.69
     installDisk: /dev/sda
     controlPlane: true
+    machine:
+      features:
+        kubernetesTalosAPIAccess:
+          enabled: true
+          allowedRoles:
+            - os:reader
+          allowedKubernetesNamespaces:
+            - kube-system
 
   - hostname: crushinator-control
     ipAddress: 10.73.95.75
     installDisk: /dev/sda
     controlPlane: true
+    machine:
+      features:
+        kubernetesTalosAPIAccess:
+          enabled: true
+          allowedRoles:
+            - os:reader
+          allowedKubernetesNamespaces:
+            - kube-system
 
   - hostname: lrrr-control
     ipAddress: 10.73.95.209
     installDisk: /dev/sda
     controlPlane: true
+    machine:
+      features:
+        kubernetesTalosAPIAccess:
+          enabled: true
+          allowedRoles:
+            - os:reader
+          allowedKubernetesNamespaces:
+            - kube-system
 
   - hostname: hypnotoad-worker
     ipAddress: 10.73.95.207
