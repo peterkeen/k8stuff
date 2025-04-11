@@ -40,23 +40,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: pkdn-ts
-  annotations:
-    tailscale.com/tags: "tag:production"
-spec:
-  ingressClassName: tailscale
-  tls:
-    - hosts:
-        - pkdn
-  defaultBackend:
-    service:
-      name: pkdn
-      port:
-        number: 8000
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
   name: pkdn-public
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
