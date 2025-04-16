@@ -1,0 +1,14 @@
+defaultSettings:
+  createDefaultDiskLabeledNodes: true
+
+longhornManager:
+  nodeSelector:
+    topology.kubernetes.io/zone: home-1
+
+longhornDriver:
+  nodeSelector:
+    topology.kubernetes.io/zone: home-1
+
+longhornUI:
+  nodeSelector:
+    topology.kubernetes.io/zone: home-1

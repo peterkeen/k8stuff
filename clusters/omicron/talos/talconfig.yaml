@@ -16,6 +16,16 @@ patches:
             - bind
             - rshared
             - rw
+    - op: add
+      path: /machine/kubelet/extraMounts
+      value:
+        - destination: /var/lib/longhorn
+          type: bind
+          source: /var/lib/longhorn
+          options:
+            - bind
+            - rshared
+            - rw            
   - |-
     machine:
       network:
@@ -51,6 +61,8 @@ controlPlane:
       systemExtensions:
         officialExtensions:
           - siderolabs/qemu-guest-agent
+          - siderolabs/iscsi-tools
+          - siderolabs/util-linux-tools          
 
 nodes:
   - hostname: hypnotoad-control
@@ -85,9 +97,11 @@ nodes:
         systemExtensions:
           officialExtensions:
             - siderolabs/qemu-guest-agent
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
 
-  - hostname: nibbler-worker
-    ipAddress: 10.73.95.205
+  - hostname: nibbler
+    ipAddress: 10.73.95.96
     installDisk: /dev/sda
     nodeLabels:
       metallb: true
@@ -97,21 +111,22 @@ nodes:
       - name: nvidia_uvm
       - name: nvidia_drm
       - name: nvidia_modeset
+      - name: i915
 
     patches:
       - |-
         machine:
           sysctls:
             net.core.bpf_jit_harden: 1
-
     schematic:
       customization:
         systemExtensions:
           officialExtensions:
-            - siderolabs/qemu-guest-agent
             - siderolabs/nonfree-kmod-nvidia-lts
             - siderolabs/nvidia-container-toolkit-lts
             - siderolabs/i915
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools            
 
   - hostname: cloud-ord-1
     ipAddress: 144.202.49.178
@@ -119,3 +134,9 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/zone: "ord-v"    
       cloud: true
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools            
