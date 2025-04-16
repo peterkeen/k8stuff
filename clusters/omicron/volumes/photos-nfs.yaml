@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photos-nfs-pv
+spec:
+  capacity:
+    storage: 67Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: "/mnt/tank/photos"
+    server: "10.73.95.84"
+    readOnly: false

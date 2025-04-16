@@ -6,6 +6,17 @@ endpoint: https://10.73.95.69:6443
 domain: omicron.keen.land
 patches:
   - |-
+    - op: add
+      path: /machine/kubelet/extraMounts
+      value:
+        - destination: /var/openebs
+          type: bind
+          source: /var/openebs
+          options:
+            - bind
+            - rshared
+            - rw
+  - |-
     machine:
       network:
         kubespan:
@@ -13,15 +24,10 @@ patches:
           advertiseKubernetesNetworks: true
       kubelet:
         extraArgs:
-          cloud-provider: external
           rotate-server-certificates: true
 
   - |-
     cluster:
-      externalCloudProvider:
-        enabled: true
-        manifests:
-          - https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml      
       discovery:
         enabled: true
         registries:
@@ -30,6 +36,16 @@ patches:
           service: {}
 
 controlPlane:
+  patches:
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:reader
+            allowedKubernetesNamespaces:
+              - kube-system
   schematic:
     customization:
       systemExtensions:
@@ -41,54 +57,65 @@ nodes:
     ipAddress: 10.73.95.69
     installDisk: /dev/sda
     controlPlane: true
-    machine:
-      features:
-        kubernetesTalosAPIAccess:
-          enabled: true
-          allowedRoles:
-            - os:reader
-          allowedKubernetesNamespaces:
-            - kube-system
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
 
   - hostname: crushinator-control
     ipAddress: 10.73.95.75
     installDisk: /dev/sda
     controlPlane: true
-    machine:
-      features:
-        kubernetesTalosAPIAccess:
-          enabled: true
-          allowedRoles:
-            - os:reader
-          allowedKubernetesNamespaces:
-            - kube-system
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"    
 
   - hostname: lrrr-control
     ipAddress: 10.73.95.209
     installDisk: /dev/sda
     controlPlane: true
-    machine:
-      features:
-        kubernetesTalosAPIAccess:
-          enabled: true
-          allowedRoles:
-            - os:reader
-          allowedKubernetesNamespaces:
-            - kube-system
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"    
 
   - hostname: hypnotoad-worker
     ipAddress: 10.73.95.207
     installDisk: /dev/sda
-    labels:
+    nodeLabels:
       metallb: true
+      topology.kubernetes.io/zone: "home-1"
     schematic:
       customization:
         systemExtensions:
           officialExtensions:
             - siderolabs/qemu-guest-agent
 
+  - hostname: nibbler-worker
+    ipAddress: 10.73.95.205
+    installDisk: /dev/sda
+    nodeLabels:
+      metallb: true
+      topology.kubernetes.io/zone: "home-1"
+    kernelModules:
+      - name: nvidia
+      - name: nvidia_uvm
+      - name: nvidia_drm
+      - name: nvidia_modeset
+
+    patches:
+      - |-
+        machine:
+          sysctls:
+            net.core.bpf_jit_harden: 1
+
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/qemu-guest-agent
+            - siderolabs/nonfree-kmod-nvidia-lts
+            - siderolabs/nvidia-container-toolkit-lts
+            - siderolabs/i915
+
   - hostname: cloud-ord-1
     ipAddress: 144.202.49.178
     installDisk: /dev/vda
-    labels:
+    nodeLabels:
+      topology.kubernetes.io/zone: "ord-v"    
       cloud: true

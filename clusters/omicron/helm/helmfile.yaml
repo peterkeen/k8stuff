@@ -15,8 +15,24 @@ repositories:
   url: https://charts.jetstack.io
 - name: external-dns
   url: https://kubernetes-sigs.github.io/external-dns/
+- name: democratic-csi
+  url: https://democratic-csi.github.io/charts/
+- name: openebs
+  url: https://openebs.github.io/openebs
+- name: nvdp
+  url: https://nvidia.github.io/k8s-device-plugin
+- name: nfd
+  url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+- name: intel
+  url: https://intel.github.io/helm-charts/
+- name: cnpg
+  url: https://cloudnative-pg.github.io/charts
+- name: stakater
+  url: https://stakater.github.io/stakater-charts
 
 releases:
+
+# 1Password Secrets
 - name: connect
   namespace: onepassword
   chart: 1password/connect
@@ -28,6 +44,7 @@ releases:
     - name: connect.credentials
       file: .secrets/1password-credentials.json
 
+# Tailscale stuff
 - name: tailscale-operator
   namespace: tailscale
   chart: tailscale/tailscale-operator
@@ -39,6 +56,7 @@ releases:
     - name: apiServerProxyConfig.mode
       value: "true"
 
+# Load balancer
 - name: metallb
   namespace: metallb-system
   chart: metallb/metallb
@@ -54,6 +72,7 @@ releases:
       command: "kubectl"
       args: ["delete", "-f", "metallb/pool.yaml"]
 
+# K8s dashboard
 - name: kubernetes-dashboard
   namespace: kubernetes-dashboard
   chart: kubernetes-dashboard/kubernetes-dashboard
@@ -67,27 +86,101 @@ releases:
       command: "kubectl"
       args: ["delete", "-f", "dashboard/resources.yaml"]
 
+# Private keen.land ingress
 - name: ingress-nginx
   namespace: ingress-nginx
   chart: ingress-nginx/ingress-nginx
 
+# Public ingress (runs at vultr)
 - name: ingress-nginx-public
   namespace: ingress-nginx-public
   chart: ingress-nginx/ingress-nginx
   values:
     - ingress-nginx-public/values.yaml
 
+# Auto-update pods when containers update
 - name: keel
   namespace: kube-system
   chart: keel/keel
 
+# Maintain certificates for ingress
 - name: cert-manager
   namespace: cert-manager
   chart: jetstack/cert-manager
   set:
     - name: crds.enabled
       value: true
+    - name: dns01RecursiveNameserversOnly
+      value: true
+  setString:
+    - name: dns01RecursiveNameservers
+      value: "8.8.8.8:53,1.1.1.1:53"
 
+# Set IPs for ingress in route53
 - name: external-dns
   namespace: external-dns
   chart: external-dns/external-dns
+
+# Storage on NAS (morbo)
+- name: zfs-nfs
+  namespace: democratic-csi
+  chart: democratic-csi/democratic-csi
+  values:
+    - zfs-nfs/values.yaml
+  setString:
+    - name: driver.config.httpConnection.password
+      value: "op://fmycvdzmeyvbndk7s7pjyrebtq/kgcd45ae35qjybkqluukhv4z7y/ADMIN_PASSWORD"
+
+# Local storage
+- name: openebs
+  namespace: openebs
+  chart: openebs/openebs
+  values:
+    - openebs/values.yaml
+
+# Set node labels based on hardware etc
+- name: nfd
+  namespace: node-feature-discovery
+  chart: nfd/node-feature-discovery
+
+# Set node labels for nvidia GPUs
+- name: nvidia-device-plugin
+  chart: nvdp/nvidia-device-plugin
+  namespace: default
+  set:
+    - name: gfd.enabled
+      value: true
+    - name: nfd.enabled
+      value: false
+    - name: allowDefaultNamespace
+      value: true
+    - name: runtimeClassName
+      value: "nvidia"
+  hooks:
+    - events: ["preapply"]
+      showlogs: true
+      command: "kubectl"
+      args: ["apply", "-f", "nvidia-device-plugin/resources.yaml"]
+
+# Set labels for intel devices
+- name: dp-operator
+  namespace: inteldeviceplugins-system
+  chart: intel/intel-device-plugins-operator
+
+# Set labels for intel GPUs
+- name: gpu
+  namespace: inteldeviceplugins-system
+  chart: intel/intel-device-plugins-gpu
+  set:
+    - name: nodeFeaturesRule
+      value: true
+
+# Postgresql databases
+- name: cnpg
+  namespace: cnpg-system
+  chart: cnpg/cloudnative-pg
+
+# Reload deployments when configmaps or secrets change
+- name: reloader
+  namespace: reloader
+  chart: stakater/reloader
