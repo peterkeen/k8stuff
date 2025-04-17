@@ -148,7 +148,7 @@ releases:
 # Set node labels for nvidia GPUs
 - name: nvidia-device-plugin
   chart: nvdp/nvidia-device-plugin
-  namespace: default
+  namespace: nvidia
   set:
     - name: gfd.enabled
       value: true
@@ -193,8 +193,8 @@ releases:
   chart: longhorn/longhorn
   values:
     - longhorn/values.yaml
-  hooks:
-    - events: ["postsync"]
-      showlogs: true
-      command: "kubectl"
-      args: ["apply", "-f", "longhorn/resources.yaml"]
+  # hooks:
+  #   - events: ["postsync"]
+  #     showlogs: true
+  #     command: "kubectl"
+  #     args: ["apply", "-f", "longhorn/resources.yaml"]

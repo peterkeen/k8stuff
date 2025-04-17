@@ -2,7 +2,7 @@
 clusterName: omicron
 talosVersion: 1.9.5
 kubernetesVersion: 1.32.3
-endpoint: https://10.73.95.69:6443
+endpoint: https://10.73.95.75:6443
 domain: omicron.keen.land
 patches:
   - |-
@@ -16,16 +16,20 @@ patches:
             - bind
             - rshared
             - rw
-    - op: add
-      path: /machine/kubelet/extraMounts
-      value:
         - destination: /var/lib/longhorn
           type: bind
           source: /var/lib/longhorn
           options:
             - bind
             - rshared
-            - rw            
+            - rw
+        - destination: /var/mnt/storage
+          type: bind
+          source: /var/mnt/storage
+          options:
+            - bind
+            - rshared
+            - rw          
   - |-
     machine:
       network:
@@ -62,46 +66,46 @@ controlPlane:
         officialExtensions:
           - siderolabs/qemu-guest-agent
           - siderolabs/iscsi-tools
-          - siderolabs/util-linux-tools          
+          - siderolabs/util-linux-tools
 
 nodes:
-  - hostname: hypnotoad-control
-    ipAddress: 10.73.95.69
-    installDisk: /dev/sda
-    controlPlane: true
-    nodeLabels:
-      topology.kubernetes.io/zone: "home-1"
-
   - hostname: crushinator-control
     ipAddress: 10.73.95.75
     installDisk: /dev/sda
     controlPlane: true
     nodeLabels:
-      topology.kubernetes.io/zone: "home-1"    
+      topology.kubernetes.io/zone: "home-1"
 
   - hostname: lrrr-control
     ipAddress: 10.73.95.209
     installDisk: /dev/sda
     controlPlane: true
     nodeLabels:
-      topology.kubernetes.io/zone: "home-1"    
-
-  - hostname: hypnotoad-worker
-    ipAddress: 10.73.95.207
-    installDisk: /dev/sda
-    nodeLabels:
-      metallb: true
       topology.kubernetes.io/zone: "home-1"
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/qemu-guest-agent
-            - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools
+
+  - hostname: morbo-control
+    ipAddress: 10.73.95.228
+    installDisk: /dev/vda
+    controlPlane: true
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
+
+  # - hostname: hypnotoad-worker
+  #   ipAddress: 10.73.95.207
+  #   installDisk: /dev/sda
+  #   nodeLabels:
+  #     metallb: true
+  #     topology.kubernetes.io/zone: "home-1"
+  #   schematic:
+  #     customization:
+  #       systemExtensions:
+  #         officialExtensions:
+  #           - siderolabs/qemu-guest-agent
+  #           - siderolabs/iscsi-tools
+  #           - siderolabs/util-linux-tools
 
   - hostname: nibbler
-    ipAddress: 10.73.95.96
+    ipAddress: 10.73.95.176
     installDisk: /dev/sda
     nodeLabels:
       metallb: true
@@ -118,6 +122,15 @@ nodes:
         machine:
           sysctls:
             net.core.bpf_jit_harden: 1
+
+      - |-
+        - op: add
+          path: /machine/disks
+          value:
+            - device: /dev/nvme0n1
+              partitions:
+                - mountpoint: /var/mnt/storage
+
     schematic:
       customization:
         systemExtensions:
@@ -126,17 +139,17 @@ nodes:
             - siderolabs/nvidia-container-toolkit-lts
             - siderolabs/i915
             - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools            
+            - siderolabs/util-linux-tools
 
   - hostname: cloud-ord-1
     ipAddress: 144.202.49.178
     installDisk: /dev/vda
     nodeLabels:
-      topology.kubernetes.io/zone: "ord-v"    
+      topology.kubernetes.io/zone: "ord-v"
       cloud: true
     schematic:
       customization:
         systemExtensions:
           officialExtensions:
             - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools            
+            - siderolabs/util-linux-tools

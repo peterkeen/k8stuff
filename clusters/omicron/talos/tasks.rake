@@ -5,7 +5,7 @@ task :setup do
 
     sh "op document get --vault fmycvdzmeyvbndk7s7pjyrebtq zjr2jsjcsptwwxjqscu2r4wbze > clusterconfig/talsecret.yaml"
     sh "talhelper genconfig --secret-file clusterconfig/talsecret.yaml --no-gitignore"
-    talhelper_cmd("kubeconfig --extra-flags '--force'")
+#    talhelper_cmd("kubeconfig --extra-flags '--force'")
   end
 end
 
