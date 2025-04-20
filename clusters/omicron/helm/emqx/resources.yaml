@@ -1,0 +1,52 @@
+apiVersion: apps.emqx.io/v2beta1
+kind: EMQX
+metadata:
+  name: emqx
+spec:
+  image: emqx:5
+  coreTemplate:
+    spec:
+      replicas: 1
+      nodeSelector:
+        topology.kubernetes.io/zone: home-1        
+      volumeClaimTemplates:
+        storageClassName: longhorn-local
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 16Gi
+  dashboardServiceTemplate:
+    spec:
+      selector:
+        apps.emqx.io/instance: emqx
+      ports:
+        - protocol: TCP
+          port: 18083
+  listenersServiceTemplate:
+    spec:
+      type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: emqx-private
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - emqx.keen.land
+      secretName: keenland-emqx-ingress-cert
+  rules:
+    - host: emqx.keen.land
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: emqx-dashboard
+                port:
+                  number: 18083
