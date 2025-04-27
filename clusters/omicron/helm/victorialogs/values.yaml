@@ -1,0 +1,27 @@
+global:
+  cluster:
+    dnsDomain: omicron.keen.land.
+
+server:
+  persistentVolume:
+    enabled: true
+    storageClassName: longhorn
+  nodeSelector:
+    topology.kubernetes.io/zone: home-1
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - name: logs.keen.land
+        path:
+          - /
+        port: http
+    tls:
+      - hosts:
+          - logs.keen.land
+        secretName: keenland-victorialogs-ingress-cert
+
+vector:
+  enabled: true

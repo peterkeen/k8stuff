@@ -33,6 +33,10 @@ repositories:
   url: https://charts.longhorn.io
 - name: emqx
   url: https://repos.emqx.io/charts
+- name: akri
+  url: https://project-akri.github.io/akri/
+- name: vm
+  url: https://victoriametrics.github.io/helm-charts/
 
 releases:
 
@@ -201,6 +205,22 @@ releases:
   #     command: "kubectl"
   #     args: ["apply", "-f", "longhorn/resources.yaml"]
 
+# replicated mqtt server
 - name: emqx-operator
   namespace: emqx-operator-system
   chart: emqx/emqx-operator
+
+# usb device discovery
+- name: akri
+  namespace: akri-system
+  chart: akri/akri
+  set:
+    - name: udev.discovery.enabled
+      value: true
+
+# centralized logging
+- name: vls
+  chart: vm/victoria-logs-single
+  namespace: vm-system
+  values:
+    - victorialogs/values.yaml

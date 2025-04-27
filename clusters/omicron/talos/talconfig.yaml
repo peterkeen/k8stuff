@@ -83,12 +83,12 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
 
-  - hostname: morbo-control
-    ipAddress: 10.73.95.228
-    installDisk: /dev/vda
-    controlPlane: true
-    nodeLabels:
-      topology.kubernetes.io/zone: "home-1"
+  # - hostname: morbo-control
+  #   ipAddress: 10.73.95.228
+  #   installDisk: /dev/vda
+  #   controlPlane: true
+  #   nodeLabels:
+  #     topology.kubernetes.io/zone: "home-1"
 
   # - hostname: hypnotoad-worker
   #   ipAddress: 10.73.95.207
@@ -140,6 +140,41 @@ nodes:
             - siderolabs/i915
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
+
+  - hostname: hypnotoad
+    ipAddress: 10.73.95.234
+    installDisk: /dev/sdb
+    nodeLabels:
+      metallb: true
+      topology.kubernetes.io/zone: "home-1"
+    kernelModules:
+      - name: i915
+    controlPlane: true        
+
+    patches:
+      - |-
+        machine:
+          sysctls:
+            net.core.bpf_jit_harden: 1
+      - |-
+        cluster:
+          allowSchedulingOnControlPlanes: true
+
+      - |-
+        - op: add
+          path: /machine/disks
+          value:
+            - device: /dev/nvme0n1
+              partitions:
+                - mountpoint: /var/mnt/storage
+
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools            
 
   - hostname: cloud-ord-1
     ipAddress: 144.202.49.178
