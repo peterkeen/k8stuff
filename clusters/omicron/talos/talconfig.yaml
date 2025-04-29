@@ -58,6 +58,7 @@ controlPlane:
             enabled: true
             allowedRoles:
               - os:reader
+              - os:etcd:backup
             allowedKubernetesNamespaces:
               - kube-system
   schematic:
@@ -188,3 +189,16 @@ nodes:
           officialExtensions:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
+
+  - hostname: wyse-3040-9c0d
+    ipAddress: 10.73.95.159
+    installDisk: /dev/sda
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+            
