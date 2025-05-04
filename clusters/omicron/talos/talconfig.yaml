@@ -84,29 +84,8 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
 
-  # - hostname: morbo-control
-  #   ipAddress: 10.73.95.228
-  #   installDisk: /dev/vda
-  #   controlPlane: true
-  #   nodeLabels:
-  #     topology.kubernetes.io/zone: "home-1"
-
-  # - hostname: hypnotoad-worker
-  #   ipAddress: 10.73.95.207
-  #   installDisk: /dev/sda
-  #   nodeLabels:
-  #     metallb: true
-  #     topology.kubernetes.io/zone: "home-1"
-  #   schematic:
-  #     customization:
-  #       systemExtensions:
-  #         officialExtensions:
-  #           - siderolabs/qemu-guest-agent
-  #           - siderolabs/iscsi-tools
-  #           - siderolabs/util-linux-tools
-
   - hostname: nibbler
-    ipAddress: 10.73.95.176
+    ipAddress: 10.73.95.97
     installDisk: /dev/sda
     nodeLabels:
       metallb: true
@@ -117,7 +96,6 @@ nodes:
       - name: nvidia_drm
       - name: nvidia_modeset
       - name: i915
-
     patches:
       - |-
         machine:
@@ -195,6 +173,7 @@ nodes:
     installDisk: /dev/sda
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
+      location: "mediacloset"
     schematic:
       customization:
         systemExtensions:
@@ -202,3 +181,28 @@ nodes:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
             
+  - hostname: wyse-3040-9835
+    ipAddress: 10.73.95.223
+    installDisk: /dev/sdb
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
+      location: "office"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+
+  - hostname: wyse-3040-9855
+    ipAddress: 10.73.95.65
+    installDisk: /dev/sda
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
+      location: "garage"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools

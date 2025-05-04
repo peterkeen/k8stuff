@@ -10,12 +10,12 @@ spec:
       nodeSelector:
         topology.kubernetes.io/zone: home-1        
       volumeClaimTemplates:
-        storageClassName: longhorn-local
+        storageClassName: longhorn
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 16Gi
+            storage: 2Gi
   dashboardServiceTemplate:
     spec:
       selector:
