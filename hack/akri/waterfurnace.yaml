@@ -1,0 +1,44 @@
+apiVersion: akri.sh/v0
+kind: Configuration
+metadata:
+  name: akri-waterfurnace
+  namespace: akri-system  
+spec:
+  discoveryHandler:
+    name: udev
+    discoveryDetails: |+
+      groupRecursive: true
+      udevRules:
+      - KERNEL=="ttyUSB*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001"        
+  capacity: 1
+  brokerSpec:
+    brokerPodSpec:
+      imagePullSecrets:
+        - name: ghcr.io
+      containers:
+        - name: akri-waterfurnace-serial-broker
+          image: "ghcr.io/keenfamily-us/infra/stacks/ser2net:latest"
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              "{{PLACEHOLDER}}" : "1"
+              memory: 10Mi
+              cpu: 10m
+            limits:
+              "{{PLACEHOLDER}}" : "1"
+              memory: 30Mi
+              cpu: 29m
+  instanceServiceSpec:
+    type: ClusterIP
+    ports:
+    - port: 6639
+      protocol: TCP
+      targetPort: 6639
+  configurationServiceSpec:
+    type: ClusterIP
+    ports:
+    - port: 6639
+      protocol: TCP
+      targetPort: 6639
+  brokerProperties: {}
