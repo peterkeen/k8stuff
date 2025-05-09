@@ -1,0 +1,11 @@
+worker:
+  config:
+    sources:
+      usb:
+        deviceClassWhitelist:
+          - "00"
+          - "02"
+          - "0e"
+          - "ef"
+          - "fe"
+          - "ff"

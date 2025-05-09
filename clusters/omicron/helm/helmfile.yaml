@@ -33,8 +33,6 @@ repositories:
   url: https://charts.longhorn.io
 - name: emqx
   url: https://repos.emqx.io/charts
-- name: akri
-  url: https://project-akri.github.io/akri/
 - name: vm
   url: https://victoriametrics.github.io/helm-charts/
 
@@ -150,6 +148,8 @@ releases:
 - name: nfd
   namespace: node-feature-discovery
   chart: nfd/node-feature-discovery
+  values:
+    - node-feature-discovery/values.yaml
 
 # Set node labels for nvidia GPUs
 - name: nvidia-device-plugin
@@ -209,14 +209,6 @@ releases:
 - name: emqx-operator
   namespace: emqx-operator-system
   chart: emqx/emqx-operator
-
-# usb device discovery
-- name: akri
-  namespace: akri-system
-  chart: akri/akri
-  set:
-    - name: udev.discovery.enabled
-      value: true
 
 # centralized logging
 - name: vls

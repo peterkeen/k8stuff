@@ -1,21 +1,25 @@
-def build_docker(prereqs: [], repo_base: "ghcr.io/peterkeen/k8stuff", task_dir: nil)
+def build_docker(prereqs: [], repo_base: "ghcr.io/peterkeen/k8stuff", task_dir: nil, platform: "linux/amd64")  
   task_dir ||= File.dirname(caller_locations.first.path)
 
   build_tag = "#{repo_base}/#{task_dir}:latest"
 
-  task :build_docker => prereqs do
-    Dir.chdir(task_dir) do
-      sh "docker build -t #{build_tag} ."
+  namespace :docker do
+
+    task :build => prereqs do
+      Dir.chdir(task_dir) do
+        sh "docker build --platform #{platform} -t #{build_tag} ."
+      end
     end
+
+    task :push do
+      Dir.chdir(task_dir) do
+        sh "docker push #{build_tag}"
+      end
+    end
+
   end
 
-  task :push_docker do
-    Dir.chdir(task_dir) do
-      sh "docker push #{build_tag}"
-    end
-  end
-
-  task :build_and_push_docker => [:build_docker, :push_docker]
+  task :docker => ["docker:build", "docker:push"]  
 end
 
 def k8s_apply(prereqs: [], context: "admin@omicron", task_dir: nil)

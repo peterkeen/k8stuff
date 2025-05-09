@@ -39,6 +39,9 @@ patches:
       kubelet:
         extraArgs:
           rotate-server-certificates: true
+      features:
+        hostDNS:
+          resolveMemberNames: true
 
   - |-
     cluster:
@@ -182,7 +185,7 @@ nodes:
             - siderolabs/util-linux-tools
             
   - hostname: wyse-3040-9835
-    ipAddress: 10.73.95.223
+    ipAddress: 10.73.95.196
     installDisk: /dev/sdb
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
