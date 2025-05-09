@@ -29,7 +29,7 @@ patches:
           options:
             - bind
             - rshared
-            - rw          
+            - rw
   - |-
     machine:
       network:
@@ -73,19 +73,49 @@ controlPlane:
           - siderolabs/util-linux-tools
 
 nodes:
-  - hostname: crushinator-control
-    ipAddress: 10.73.95.75
-    installDisk: /dev/sda
-    controlPlane: true
-    nodeLabels:
-      topology.kubernetes.io/zone: "home-1"
-
   - hostname: lrrr-control
     ipAddress: 10.73.95.209
     installDisk: /dev/sda
     controlPlane: true
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
+
+  - hostname: crushinator
+    ipAddress: 10.73.95.176
+    installDisk: /dev/sda
+    nodeLabels:
+      metallb: true
+      topology.kubernetes.io/zone: "home-1"
+    controlPlane: true
+
+    patches:
+      - |-
+        machine:
+          sysctls:
+            net.core.bpf_jit_harden: 1
+      - |-
+        cluster:
+          allowSchedulingOnControlPlanes: true
+      - |-
+        - op: add
+          path: /machine/disks
+          value:
+            - device: /dev/sdb
+              partitions:
+                - mountpoint: /var/mnt/storage
+
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          interfaces:
+              - ens18
 
   - hostname: nibbler
     ipAddress: 10.73.95.97
@@ -131,7 +161,7 @@ nodes:
       topology.kubernetes.io/zone: "home-1"
     kernelModules:
       - name: i915
-    controlPlane: true        
+    controlPlane: true
 
     patches:
       - |-
@@ -156,7 +186,7 @@ nodes:
           officialExtensions:
             - siderolabs/i915
             - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools            
+            - siderolabs/util-linux-tools
 
   - hostname: cloud-ord-1
     ipAddress: 144.202.49.178
@@ -183,9 +213,9 @@ nodes:
           officialExtensions:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
-            
+
   - hostname: wyse-3040-9835
-    ipAddress: 10.73.95.196
+    ipAddress: 10.73.95.223
     installDisk: /dev/sdb
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
