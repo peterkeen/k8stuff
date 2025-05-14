@@ -2,7 +2,7 @@
 
 connection: &generator
   accepter: tcp,6636
-  connector: serialdev,DEVNODE,19200n81,local
+  connector: serialdev,DEVNODE,9600n81,local
   options:
     kickolduser: true
 

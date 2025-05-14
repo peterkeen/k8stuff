@@ -1,0 +1,9 @@
+controller:
+  ingressClassResource:
+    name: nginx-public-fly
+    controllerValue: k8s.io/ingress-nginx-public-fly
+  nodeSelector:
+    topology.kubernetes.io/zone: "home-1"
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest

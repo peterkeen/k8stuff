@@ -97,6 +97,13 @@ releases:
   namespace: ingress-nginx
   chart: ingress-nginx/ingress-nginx
 
+# Private keen.land ingress
+- name: ingress-nginx-public-fly
+  namespace: ingress-nginx-public-fly
+  chart: ingress-nginx/ingress-nginx 
+  values:
+    - ingress-nginx-public-fly/values.yaml
+
 # Public ingress (runs at vultr)
 - name: ingress-nginx-public
   namespace: ingress-nginx-public
@@ -216,3 +223,10 @@ releases:
   namespace: vm-system
   values:
     - victorialogs/values.yaml
+
+# metrics collection
+- name: vm
+  chart: vm/victoria-metrics-cluster
+  namespace: vm-system
+  values:
+    - victoriametrics/values.yaml

@@ -239,3 +239,18 @@ nodes:
           officialExtensions:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
+
+  - hostname: shed
+    ipAddress: 10.73.95.225
+    installDisk: /dev/sdb
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
+      location: "shed"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915            
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+            
