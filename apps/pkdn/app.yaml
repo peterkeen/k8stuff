@@ -10,7 +10,7 @@ metadata:
     keel.sh/pollSchedule: "@every 5m"
     keel.sh/approvals: "0"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: pkdn
@@ -21,9 +21,27 @@ spec:
     spec:
       containers:
         - name: pkdn
-          image: ghcr.io/peterkeen/site:nightly
+          image: ghcr.io/peterkeen/site:main
       imagePullSecrets:
         - name: ghcr.io
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: cloud
+                  operator: In
+                  values:
+                    - "true"
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: pkdn
+              topologyKey: "kubernetes.io/hostname"
 ---
 apiVersion: v1
 kind: Service
