@@ -24,7 +24,7 @@ spec:
         - name: ghcr.io
       containers:
         - name: ser2net
-          image: "ghcr.io/peterkeen/k8stuff/apps/ser2net-auto:latest"
+          image: "ghcr.io/peterkeen/ser2net-auto:main"
           securityContext:
             privileged: true
           volumeMounts:
