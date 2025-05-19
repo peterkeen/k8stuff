@@ -21,3 +21,13 @@ task :apply => :setup do
     sh "op inject -i helmfile.yaml | helmfile apply -f -"
   end
 end
+
+task :preview => :setup do
+  validate_tool("op")
+  validate_tool("helmfile")
+
+  Dir.chdir(File.dirname(__FILE__)) do
+    sh "helmfile init"
+    sh "op inject -i helmfile.yaml | helmfile diff -f -"
+  end
+end

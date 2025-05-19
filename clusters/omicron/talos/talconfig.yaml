@@ -2,7 +2,7 @@
 clusterName: omicron
 talosVersion: 1.9.5
 kubernetesVersion: 1.32.3
-endpoint: https://10.73.95.75:6443
+endpoint: https://10.73.95.209:6443
 domain: omicron.keen.land
 patches:
   - |-
@@ -79,6 +79,9 @@ nodes:
     controlPlane: true
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
+    networkInterfaces:
+      - interface: eth0
+        dhcp: true
 
   - hostname: crushinator
     ipAddress: 10.73.95.176
@@ -114,6 +117,8 @@ nodes:
       - interface: br0
         dhcp: true
         bridge:
+          stp:
+            enabled: true
           interfaces:
               - ens18
 
@@ -153,6 +158,16 @@ nodes:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
 
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - eno1
+            - enp3s0
+
   - hostname: hypnotoad
     ipAddress: 10.73.95.234
     installDisk: /dev/sdb
@@ -179,6 +194,16 @@ nodes:
             - device: /dev/nvme0n1
               partitions:
                 - mountpoint: /var/mnt/storage
+
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - eno1
+            - enp1s0
 
     schematic:
       customization:
@@ -214,6 +239,15 @@ nodes:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
 
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - enp1s0
+
   - hostname: wyse-3040-9835
     ipAddress: 10.73.95.223
     installDisk: /dev/sdb
@@ -226,6 +260,15 @@ nodes:
           officialExtensions:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
+
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - enp1s0
 
   - hostname: wyse-3040-9855
     ipAddress: 10.73.95.65
@@ -240,6 +283,15 @@ nodes:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
 
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - enp1s0
+
   - hostname: shed
     ipAddress: 10.73.95.225
     installDisk: /dev/sdb
@@ -250,7 +302,15 @@ nodes:
       customization:
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915            
+            - siderolabs/i915
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
-            
+
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - enp1s0

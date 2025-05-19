@@ -9,3 +9,4 @@ task :apply_repo_secrets => "talos:setup" do
 end
 
 task :apply => ["talos:apply", :apply_repo_secrets, "helm:apply"]
+

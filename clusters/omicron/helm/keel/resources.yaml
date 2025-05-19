@@ -7,25 +7,25 @@ metadata:
 spec:
   selector:
     app: keel
-    namespace: kube-system
   ports:
     - protocol: TCP
       port: 9300
+      targetPort: 9300
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: keel-public
+  name: keel
   namespace: kube-system  
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: nginx
   tls:
     - hosts:
         - keel.keen.land
-      secretName: public-keel-ingress-cert
+      secretName: keenland-keel-ingress-cert
   rules:
     - host: keel.keen.land
       http:

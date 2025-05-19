@@ -115,6 +115,15 @@ releases:
 - name: keel
   namespace: kube-system
   chart: keel/keel
+  set:
+    - name: image.tag
+      value: latest
+    - name: basicauth.enabled
+      value: "true"
+    - name: basicauth.user
+      value: "admin"
+    - name: basicauth.password
+      value: "op://fmycvdzmeyvbndk7s7pjyrebtq/y25hlaydwnh2dhsh4ytxdrmc7u/ADMIN_PASSWORD"
 
 # Maintain certificates for ingress
 - name: cert-manager
@@ -230,3 +239,13 @@ releases:
   namespace: vm-system
   values:
     - victoriametrics/values.yaml
+
+- name: metacontroller
+  chart: oci://ghcr.io/metacontroller/metacontroller-helm
+  version: 4.12.1
+  namespace: metacontroller
+
+- name: whereabouts
+  chart: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
+  version: 0.9.0
+  namespace: default
