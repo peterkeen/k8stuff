@@ -1,0 +1,528 @@
+/opt/homebrew/bin/op
+/opt/homebrew/bin/talhelper
+generated config for lrrr-control in ./clusterconfig/omicron-lrrr-control.yaml
+generated config for crushinator in ./clusterconfig/omicron-crushinator.yaml
+generated config for nibbler in ./clusterconfig/omicron-nibbler.yaml
+generated config for hypnotoad in ./clusterconfig/omicron-hypnotoad.yaml
+generated config for cloud-ord-1 in ./clusterconfig/omicron-cloud-ord-1.yaml
+generated config for wyse-3040-9c0d in ./clusterconfig/omicron-wyse-3040-9c0d.yaml
+generated config for wyse-3040-9835 in ./clusterconfig/omicron-wyse-3040-9835.yaml
+generated config for shed in ./clusterconfig/omicron-shed.yaml
+generated client config in ./clusterconfig/talosconfig
+/opt/homebrew/bin/op
+/opt/homebrew/bin/op
+/opt/homebrew/bin/helmfile
+Comparing release=connect, chart=1password/connect, namespace=onepassword
+Comparing release=tailscale-operator, chart=tailscale/tailscale-operator, namespace=tailscale
+Comparing release=metallb, chart=metallb/metallb, namespace=metallb-system
+Comparing release=kubernetes-dashboard, chart=kubernetes-dashboard/kubernetes-dashboard, namespace=kubernetes-dashboard
+kubernetes-dashboard, kubernetes-dashboard-api, Deployment (apps) has changed:
+  # Source: kubernetes-dashboard/templates/deployments/api.yaml
+  # Copyright 2017 The Kubernetes Authors.
+  #
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #     http://www.apache.org/licenses/LICENSE-2.0
+  #
+  # Unless required by applicable law or agreed to in writing, software
+  # distributed under the License is distributed on an "AS IS" BASIS,
+  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  # See the License for the specific language governing permissions and
+  # limitations under the License.
+
+  kind: Deployment
+  apiVersion: apps/v1
+  metadata:
+    labels:
+      helm.sh/chart: kubernetes-dashboard-7.13.0
+      app.kubernetes.io/instance: kubernetes-dashboard
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: kubernetes-dashboard
+      app.kubernetes.io/name: kubernetes-dashboard-api
+      app.kubernetes.io/version: 1.13.0
+      app.kubernetes.io/component: api
+    annotations:
+      
+    name: kubernetes-dashboard-api
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: kubernetes-dashboard
+        app.kubernetes.io/part-of: kubernetes-dashboard
+        app.kubernetes.io/name: kubernetes-dashboard-api
+    template:
+      metadata:
+        labels:
+          helm.sh/chart: kubernetes-dashboard-7.13.0
+          app.kubernetes.io/instance: kubernetes-dashboard
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/part-of: kubernetes-dashboard
+          app.kubernetes.io/name: kubernetes-dashboard-api
+          app.kubernetes.io/version: 1.13.0
+          app.kubernetes.io/component: api
+        annotations:
+-         checksum/config: b529fa910698c610ee09282ea8549df159e04dd32ff57d25b2dc76ad555c7ea1
++         checksum/config: ad629c41b81c7fe4a21002c3e6e33636276d13dfec09d53a0b65c5b74a3c6896
+      spec:
+        containers:
+          - name: kubernetes-dashboard-api
+            image: "docker.io/kubernetesui/dashboard-api:1.13.0"
+            imagePullPolicy: IfNotPresent
+            args:
+              - --namespace=kubernetes-dashboard
+              - --metrics-scraper-service-name=kubernetes-dashboard-metrics-scraper
+
+            env:
+              - name: CSRF_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: kubernetes-dashboard-csrf
+                    key: private.key
+              - name: GOMAXPROCS
+                valueFrom:
+                  resourceFieldRef:
+                    resource: limits.cpu
+                    divisor: "1"
+              - name: GOMEMLIMIT
+                valueFrom:
+                  resourceFieldRef:
+                    resource: limits.memory
+                    divisor: "1"
+            ports:
+            
+              - containerPort: 8000
+                name: api
+                protocol: TCP
+            volumeMounts:
+            
+              - mountPath: /tmp
+                name: tmp-volume
+            securityContext:
+            
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              readOnlyRootFilesystem: true
+              runAsGroup: 2001
+              runAsUser: 1001
+            resources:
+            
+              limits:
+                cpu: 250m
+                memory: 400Mi
+              requests:
+                cpu: 100m
+                memory: 200Mi
+
+        automountServiceAccountToken: true
+        securityContext:
+        
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumes:
+        
+          - emptyDir: {}
+            name: tmp-volume
+        serviceAccountName: kubernetes-dashboard-api
+kubernetes-dashboard, kubernetes-dashboard-auth, Deployment (apps) has changed:
+  # Source: kubernetes-dashboard/templates/deployments/auth.yaml
+  # Copyright 2017 The Kubernetes Authors.
+  #
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #     http://www.apache.org/licenses/LICENSE-2.0
+  #
+  # Unless required by applicable law or agreed to in writing, software
+  # distributed under the License is distributed on an "AS IS" BASIS,
+  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  # See the License for the specific language governing permissions and
+  # limitations under the License.
+
+  kind: Deployment
+  apiVersion: apps/v1
+  metadata:
+    labels:
+      helm.sh/chart: kubernetes-dashboard-7.13.0
+      app.kubernetes.io/instance: kubernetes-dashboard
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: kubernetes-dashboard
+      app.kubernetes.io/name: kubernetes-dashboard-auth
+      app.kubernetes.io/version: 1.13.0
+      app.kubernetes.io/component: auth
+    annotations:
+      
+    name: kubernetes-dashboard-auth
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: kubernetes-dashboard
+        app.kubernetes.io/part-of: kubernetes-dashboard
+        app.kubernetes.io/name: kubernetes-dashboard-auth
+    template:
+      metadata:
+        labels:
+          helm.sh/chart: kubernetes-dashboard-7.13.0
+          app.kubernetes.io/instance: kubernetes-dashboard
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/part-of: kubernetes-dashboard
+          app.kubernetes.io/name: kubernetes-dashboard-auth
+          app.kubernetes.io/version: 1.3.0
+          app.kubernetes.io/component: auth
+        annotations:
+-         checksum/config: b529fa910698c610ee09282ea8549df159e04dd32ff57d25b2dc76ad555c7ea1
++         checksum/config: 274bd355b38d06d4dbdc36b7fb2ebb47aae09e60259fc439120f16fb3da41298
+      spec:
+        containers:
+          - name: kubernetes-dashboard-auth
+            image: "docker.io/kubernetesui/dashboard-auth:1.3.0"
+            imagePullPolicy: IfNotPresent
+            args:
+
+            env:
+              - name: CSRF_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: kubernetes-dashboard-csrf
+                    key: private.key
+              - name: GOMAXPROCS
+                valueFrom:
+                  resourceFieldRef:
+                    resource: limits.cpu
+                    divisor: "1"
+              - name: GOMEMLIMIT
+                valueFrom:
+                  resourceFieldRef:
+                    resource: limits.memory
+                    divisor: "1"
+            ports:
+            
+              - containerPort: 8000
+                name: auth
+                protocol: TCP
+            volumeMounts:
+            
+              - mountPath: /tmp
+                name: tmp-volume
+            securityContext:
+            
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              readOnlyRootFilesystem: true
+              runAsGroup: 2001
+              runAsUser: 1001
+            resources:
+            
+              limits:
+                cpu: 250m
+                memory: 400Mi
+              requests:
+                cpu: 100m
+                memory: 200Mi
+
+        automountServiceAccountToken: true
+        securityContext:
+        
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumes:
+        
+          - emptyDir: {}
+            name: tmp-volume
+kubernetes-dashboard, kubernetes-dashboard-csrf, Secret (v1) has changed:
+  # Source: kubernetes-dashboard/templates/secrets/csrf.yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    labels:
+      app.kubernetes.io/instance: kubernetes-dashboard
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: kubernetes-dashboard
+      helm.sh/chart: kubernetes-dashboard-7.13.0
+    name: kubernetes-dashboard-csrf
+  data:
+-   private.key: '-------- # (344 bytes)'
++   private.key: '++++++++ # (344 bytes)'
+
+
+Comparing release=ingress-nginx, chart=ingress-nginx/ingress-nginx, namespace=ingress-nginx
+Comparing release=ingress-nginx-public-fly, chart=ingress-nginx/ingress-nginx, namespace=ingress-nginx-public-fly
+Comparing release=ingress-nginx-public, chart=ingress-nginx/ingress-nginx, namespace=ingress-nginx-public
+Comparing release=cert-manager, chart=jetstack/cert-manager, namespace=cert-manager
+Comparing release=external-dns, chart=external-dns/external-dns, namespace=external-dns
+Comparing release=zfs-nfs, chart=democratic-csi/democratic-csi, namespace=democratic-csi
+Comparing release=openebs, chart=openebs/openebs, namespace=openebs
+Comparing release=nfd, chart=nfd/node-feature-discovery, namespace=node-feature-discovery
+Comparing release=nvidia-device-plugin, chart=nvdp/nvidia-device-plugin, namespace=nvidia
+Comparing release=dp-operator, chart=intel/intel-device-plugins-operator, namespace=inteldeviceplugins-system
+Comparing release=gpu, chart=intel/intel-device-plugins-gpu, namespace=inteldeviceplugins-system
+Comparing release=cnpg, chart=cnpg/cloudnative-pg, namespace=cnpg-system
+Comparing release=reloader, chart=stakater/reloader, namespace=reloader
+Comparing release=longhorn, chart=longhorn/longhorn, namespace=longhorn-system
+Comparing release=metacontroller, chart=/var/folders/fd/26t8w0j100951dlzt_y0fmrc0000gn/T/helmfile572567706/metacontroller/metacontroller/metacontroller-helm/4.12.1/metacontroller-helm, namespace=metacontroller
+Comparing release=whereabouts, chart=/var/folders/fd/26t8w0j100951dlzt_y0fmrc0000gn/T/helmfile572567706/default/whereabouts/whereabouts-chart/0.9.0/whereabouts-chart, namespace=default
+Comparing release=nats, chart=nats/nats, namespace=nats
+nats, nats, Service (v1) has changed:
+  # Source: nats/templates/service.yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app.kubernetes.io/component: nats
+      app.kubernetes.io/instance: nats
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: nats
+      app.kubernetes.io/version: 2.11.4
+      helm.sh/chart: nats-1.3.7
+    name: nats
+  spec:
+    ports:
+    - appProtocol: tcp
+      name: nats
+      port: 4222
+      targetPort: nats
++   - appProtocol: tcp
++     name: mqtt
++     port: 1883
++     targetPort: mqtt
+    selector:
+      app.kubernetes.io/component: nats
+      app.kubernetes.io/instance: nats
+      app.kubernetes.io/name: nats
+nats, nats, StatefulSet (apps) has changed:
+  # Source: nats/templates/stateful-set.yaml
+  apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    labels:
+      app.kubernetes.io/component: nats
+      app.kubernetes.io/instance: nats
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: nats
+      app.kubernetes.io/version: 2.11.4
+      helm.sh/chart: nats-1.3.7
+    name: nats
+  spec:
+    podManagementPolicy: Parallel
+    replicas: 3
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: nats
+        app.kubernetes.io/instance: nats
+        app.kubernetes.io/name: nats
+    serviceName: nats-headless
+    template:
+      metadata:
+        annotations:
+-         checksum/config: 3f0196d8641490d3a39d99799c48b2760129fa999bf0e0d76ef173a05635c54a
++         checksum/config: 799b486bb15d00cf78470c354f732c9315f380d568aa41a2bee7a904bdb0cd4a
+        labels:
+          app.kubernetes.io/component: nats
+          app.kubernetes.io/instance: nats
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: nats
+          app.kubernetes.io/version: 2.11.4
+          helm.sh/chart: nats-1.3.7
+      spec:
+        containers:
+        - args:
+          - --config
+          - /etc/nats-config/nats.conf
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: SERVER_NAME
+            value: $(POD_NAME)
+-         - name: GOMEMLIMIT
+-           value: 3GiB
+          image: nats:2.11.4-alpine
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - nats-server
+                - -sl=ldm=/var/run/nats/nats.pid
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz?js-enabled-only=true
+              port: monitor
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: nats
+          ports:
+          - containerPort: 4222
+            name: nats
++         - containerPort: 1883
++           name: mqtt
+          - containerPort: 6222
+            name: cluster
+          - containerPort: 8222
+            name: monitor
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz?js-server-only=true
+              port: monitor
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+-         resources:
+-           limits:
+-             cpu: "2"
+-             memory: 4Gi
+-           requests:
+-             cpu: "2"
+-             memory: 4Gi
+          startupProbe:
+            failureThreshold: 90
+            httpGet:
+              path: /healthz
+              port: monitor
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          volumeMounts:
+          - mountPath: /etc/nats-config
+            name: config
+          - mountPath: /var/run/nats
+            name: pid
+          - mountPath: /data
+            name: nats-js
+        - args:
+          - -pid
+          - /var/run/nats/nats.pid
+          - -config
+          - /etc/nats-config/nats.conf
+          image: natsio/nats-server-config-reloader:0.17.2
+          name: reloader
+          volumeMounts:
+          - mountPath: /var/run/nats
+            name: pid
+          - mountPath: /etc/nats-config
+            name: config
+        enableServiceLinks: false
+        shareProcessNamespace: true
+        terminationGracePeriodSeconds: 60
+-       topologySpreadConstraints:
+-       - labelSelector:
+-           matchLabels:
+-             app.kubernetes.io/component: nats
+-             app.kubernetes.io/instance: nats
+-             app.kubernetes.io/name: nats
+-         maxSkew: 1
+-         topologyKey: kubernetes.io/hostname
+-         whenUnsatisfiable: DoNotSchedule
+        volumes:
+        - configMap:
+            name: nats-config
+          name: config
+        - emptyDir: {}
+          name: pid
+    volumeClaimTemplates:
+    - metadata:
+        name: nats-js
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: longhorn-local
+nats, nats-config, ConfigMap (v1) has changed:
+  # Source: nats/templates/config-map.yaml
+  apiVersion: v1
+  data:
+    nats.conf: |
+      {
+        "cluster": {
+          "name": "nats",
+          "no_advertise": true,
+          "port": 6222,
+          "routes": [
+            "nats://nats-0.nats-headless:6222",
+            "nats://nats-1.nats-headless:6222",
+            "nats://nats-2.nats-headless:6222"
+          ]
+        },
+        "http_port": 8222,
+        "jetstream": {
+          "max_file_store": 10Gi,
+          "max_memory_store": 0,
+          "store_dir": "/data"
+        },
+        "lame_duck_duration": "30s",
+        "lame_duck_grace_period": "10s",
++       "mqtt": {
++         "port": 1883
++       },
+        "pid_file": "/var/run/nats/nats.pid",
+        "port": 4222,
+        "server_name": $SERVER_NAME
+      }
+  kind: ConfigMap
+  metadata:
+    labels:
+      app.kubernetes.io/component: nats
+      app.kubernetes.io/instance: nats
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: nats
+      app.kubernetes.io/version: 2.11.4
+      helm.sh/chart: nats-1.3.7
+    name: nats-config
+nats, nats-headless, Service (v1) has changed:
+  # Source: nats/templates/headless-service.yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app.kubernetes.io/component: nats
+      app.kubernetes.io/instance: nats
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: nats
+      app.kubernetes.io/version: 2.11.4
+      helm.sh/chart: nats-1.3.7
+    name: nats-headless
+  spec:
+    clusterIP: None
+    ports:
+    - appProtocol: tcp
+      name: nats
+      port: 4222
+      targetPort: nats
+    - appProtocol: tcp
++     name: mqtt
++     port: 1883
++     targetPort: mqtt
++   - appProtocol: tcp
+      name: cluster
+      port: 6222
+      targetPort: cluster
+    - appProtocol: http
+      name: monitor
+      port: 8222
+      targetPort: monitor
+    publishNotReadyAddresses: true
+    selector:
+      app.kubernetes.io/component: nats
+      app.kubernetes.io/instance: nats
+      app.kubernetes.io/name: nats
+

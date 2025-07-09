@@ -1,0 +1,39 @@
+config:
+  cluster:
+    enabled: true
+    replicas: 3
+  jetstream:
+    enabled: true
+    fileStore:
+      pvc:
+        size: 10Gi
+        storageClassName: longhorn-local
+
+  podTemplate:
+    topologySpreadConstraints:
+      kubernetes.io/hostname:
+        maxSkew: 1
+        whenUnsatisfiable: DoNotSchedule
+  
+  mqtt:
+    enabled: true
+  
+  container:
+    env:
+      # Different from k8s units, suffix must be B, KiB, MiB, GiB, or TiB
+      # Should be ~80% of memory limit
+      GOMEMLIMIT: 3GiB
+    merge:
+      # Recommended minimum: at least 2 CPU cores and 8Gi memory for production JetStream clusters
+      resources:
+        requests:
+          cpu: "2"
+          memory: 4Gi
+        limits:
+          cpu: "2"
+          memory: 4Gi  
+  
+  service:
+    ports:
+      mqtt:
+        enabled: true
