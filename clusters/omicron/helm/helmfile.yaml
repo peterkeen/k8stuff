@@ -7,8 +7,8 @@ repositories:
   url: https://metallb.github.io/metallb
 - name: ingress-nginx
   url: https://kubernetes.github.io/ingress-nginx
-- name: keel
-  url: https://charts.keel.sh
+# - name: keel
+#   url: https://charts.keel.sh
 - name: tailscale
   url: https://pkgs.tailscale.com/helmcharts
 - name: jetstack
@@ -28,13 +28,17 @@ repositories:
 - name: cnpg
   url: https://cloudnative-pg.github.io/charts
 - name: stakater
-  url: https://stakater.github.io/stakater-charts
+  url: https://stakater.github.io/stakater-charts/
 - name: longhorn
   url: https://charts.longhorn.io
-- name: emqx
-  url: https://repos.emqx.io/charts
-- name: vm
-  url: https://victoriametrics.github.io/helm-charts/
+# - name: emqx
+#   url: https://repos.emqx.io/charts
+# - name: kyverno
+#   url: https://kyverno.github.io/kyverno/
+# - name: vm
+#   url: https://victoriametrics.github.io/helm-charts/
+- name: nats
+  url: https://nats-io.github.io/k8s/helm/charts/
 
 releases:
 
@@ -112,18 +116,18 @@ releases:
     - ingress-nginx-public/values.yaml
 
 # Auto-update pods when containers update
-- name: keel
-  namespace: kube-system
-  chart: keel/keel
-  set:
-    - name: image.tag
-      value: latest
-    - name: basicauth.enabled
-      value: "true"
-    - name: basicauth.user
-      value: "admin"
-    - name: basicauth.password
-      value: "op://fmycvdzmeyvbndk7s7pjyrebtq/y25hlaydwnh2dhsh4ytxdrmc7u/ADMIN_PASSWORD"
+# - name: keel
+#   namespace: kube-system
+#   chart: keel/keel
+#   set:
+#     - name: image.tag
+#       value: latest
+#     - name: basicauth.enabled
+#       value: "true"
+#     - name: basicauth.user
+#       value: "admin"
+#     - name: basicauth.password
+#       value: "op://fmycvdzmeyvbndk7s7pjyrebtq/y25hlaydwnh2dhsh4ytxdrmc7u/ADMIN_PASSWORD"
 
 # Maintain certificates for ingress
 - name: cert-manager
@@ -142,7 +146,24 @@ releases:
 - name: external-dns
   namespace: external-dns
   chart: external-dns/external-dns
-
+  set:
+    - name: sources
+      values:
+        - ingress
+        - service
+        - crd
+    - name: managedRecordTypes
+      values:
+        - A
+        - AAAA
+        - CNAME
+        - TXT
+        - MX
+    - name: extraArgs
+      values:
+        - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+        - --crd-source-kind=DNSEndpoint
+    
 # Storage on NAS (morbo)
 - name: zfs-nfs
   namespace: democratic-csi
@@ -222,23 +243,27 @@ releases:
   #     args: ["apply", "-f", "longhorn/resources.yaml"]
 
 # replicated mqtt server
-- name: emqx-operator
-  namespace: emqx-operator-system
-  chart: emqx/emqx-operator
+# - name: emqx-operator
+#   namespace: emqx-operator-system
+#   chart: emqx/emqx-operator
 
-# centralized logging
-- name: vls
-  chart: vm/victoria-logs-single
-  namespace: vm-system
-  values:
-    - victorialogs/values.yaml
+# # centralized logging
+# - name: vls
+#   chart: vm/victoria-logs-single
+#   namespace: vm-system
+#   values:
+#     - victorialogs/values.yaml
 
-# metrics collection
-- name: vm
-  chart: vm/victoria-metrics-cluster
-  namespace: vm-system
-  values:
-    - victoriametrics/values.yaml
+# # metrics collection
+# - name: vm
+#   chart: vm/victoria-metrics-cluster
+#   namespace: vm-system
+#   values:
+#     - victoriametrics/values.yaml
+
+# - name: kyverno
+#   chart: kyverno/kyverno
+#   namespace: kyverno
 
 - name: metacontroller
   chart: oci://ghcr.io/metacontroller/metacontroller-helm
@@ -249,3 +274,9 @@ releases:
   chart: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
   version: 0.9.0
   namespace: default
+
+# - name: nats
+#   namespace: nats
+#   chart: nats/nats
+#   values:
+#     - nats/values.yaml

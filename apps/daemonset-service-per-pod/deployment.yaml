@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daemonset-service-per-pod
+  namespace: iot-system
+  labels:
+    app: daemonset-service-per-pod
+  annotations:
+    keel.sh/policy: "force"
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 1m"
+    keel.sh/approvals: "0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: daemonset-service-per-pod
+  template:
+    metadata:
+      labels:
+        app: daemonset-service-per-pod
+    spec:
+      serviceAccountName: daemonset-service-per-pod
+      containers:
+        - name: daemonset-service-per-pod
+          image: ghcr.io/peterkeen/daemonset-service-per-pod:main
+          imagePullPolicy: "Always"
+      imagePullSecrets:
+        - name: ghcr.io
+

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: smartctl-exporter
+  namespace: monitoring
+  labels:
+    app: smartctl-exporter
+spec:
+  selector:
+    matchLabels:
+      app: smartctl-exporter
+  template:
+    metadata:
+      labels:
+        app: smartctl-exporter
+      annotations:
+        keen.land/ports: "prom:9633"
+    spec:
+      containers:
+        - name: smartctl-exporter
+          image: prometheuscommunity/smartctl-exporter
+          securityContext:
+            privileged: true
+            runAsUser: 0
+            runAsGroup: 0
+          command: ["/bin/smartctl_exporter", "--smartctl.device-exclude", "sd[b-z]"]
+      restartPolicy: Always
+      hostNetwork: true

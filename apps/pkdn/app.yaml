@@ -22,6 +22,7 @@ spec:
       containers:
         - name: pkdn
           image: ghcr.io/peterkeen/site:main
+          imagePullPolicy: "Always"          
       imagePullSecrets:
         - name: ghcr.io
       affinity:

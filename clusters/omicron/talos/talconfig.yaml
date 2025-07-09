@@ -1,7 +1,7 @@
 ---
 clusterName: omicron
-talosVersion: 1.9.5
-kubernetesVersion: 1.32.3
+talosVersion: 1.10.4
+kubernetesVersion: 1.33.2
 endpoint: https://10.73.95.209:6443
 domain: omicron.keen.land
 patches:
@@ -89,7 +89,8 @@ nodes:
     nodeLabels:
       metallb: true
       topology.kubernetes.io/zone: "home-1"
-    controlPlane: true
+      keen.land/rfZone: "office"
+    controlPlane: false
 
     patches:
       - |-
@@ -106,6 +107,9 @@ nodes:
             - device: /dev/sdb
               partitions:
                 - mountpoint: /var/mnt/storage
+            - device: /dev/sdc
+              partitions:
+                - mountpoint: /var/mnt/nvme_storage
 
     schematic:
       customization:
@@ -124,10 +128,11 @@ nodes:
 
   - hostname: nibbler
     ipAddress: 10.73.95.97
-    installDisk: /dev/sda
+    installDisk: /dev/nvme0
     nodeLabels:
       metallb: true
       topology.kubernetes.io/zone: "home-1"
+      keen.land/rfZone: "house"
     kernelModules:
       - name: nvidia
       - name: nvidia_uvm
@@ -137,16 +142,20 @@ nodes:
     patches:
       - |-
         machine:
+          install:
+            extraKernelArgs:
+              - pcie_aspm=off
+      - |-
+        machine:
           sysctls:
             net.core.bpf_jit_harden: 1
 
-      - |-
-        - op: add
-          path: /machine/disks
-          value:
-            - device: /dev/nvme0n1
-              partitions:
-                - mountpoint: /var/mnt/storage
+    userVolumes:
+      - name: storage
+        provisioning:
+          diskSelector:
+            match: disk.transport == "nvme" 
+          minSize: 1.8TiB
 
     schematic:
       customization:
@@ -166,7 +175,6 @@ nodes:
             enabled: true
           interfaces:
             - eno1
-            - enp3s0
 
   - hostname: hypnotoad
     ipAddress: 10.73.95.234
@@ -174,9 +182,10 @@ nodes:
     nodeLabels:
       metallb: true
       topology.kubernetes.io/zone: "home-1"
+      keen.land/rfZone: "house"
     kernelModules:
       - name: i915
-    controlPlane: true
+    controlPlane: false
 
     patches:
       - |-
@@ -232,6 +241,7 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
       location: "mediacloset"
+      keen.land/rfZone: "house"
     schematic:
       customization:
         systemExtensions:
@@ -254,6 +264,7 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
       location: "office"
+      keen.land/rfZone: "office"
     schematic:
       customization:
         systemExtensions:
@@ -270,27 +281,28 @@ nodes:
           interfaces:
             - enp1s0
 
-  - hostname: wyse-3040-9855
-    ipAddress: 10.73.95.65
-    installDisk: /dev/sda
-    nodeLabels:
-      topology.kubernetes.io/zone: "home-1"
-      location: "garage"
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools
+  # - hostname: wyse-3040-9855
+  #   ipAddress: 10.73.95.65
+  #   installDisk: /dev/sda
+  #   nodeLabels:
+  #     topology.kubernetes.io/zone: "home-1"
+  #     location: "garage"
+  #     keen.land/rfZone: "garage"
+  #   schematic:
+  #     customization:
+  #       systemExtensions:
+  #         officialExtensions:
+  #           - siderolabs/iscsi-tools
+  #           - siderolabs/util-linux-tools
 
-    networkInterfaces:
-      - interface: br0
-        dhcp: true
-        bridge:
-          stp:
-            enabled: true
-          interfaces:
-            - enp1s0
+    # networkInterfaces:
+    #   - interface: br0
+    #     dhcp: true
+    #     bridge:
+    #       stp:
+    #         enabled: true
+    #       interfaces:
+    #         - enp1s0
 
   - hostname: shed
     ipAddress: 10.73.95.225
@@ -298,6 +310,7 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
       location: "shed"
+      keen.land/rfZone: "shed"
     schematic:
       customization:
         systemExtensions:

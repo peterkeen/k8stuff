@@ -25,6 +25,11 @@ task :apply => :setup do
   talhelper_cmd(cmd.join(" "))
 end
 
+task :preview => :setup do
+  cmd = %w[apply --extra-flags="--dry-run"]
+  talhelper_cmd(cmd.join(" "))
+end
+
 task :upgrade => :setup do
   talhelper_cmd("upgrade")
 end  

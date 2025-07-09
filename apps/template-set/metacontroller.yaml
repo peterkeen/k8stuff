@@ -1,0 +1,74 @@
+apiVersion: metacontroller.k8s.io/v1alpha1
+kind: CompositeController
+metadata:
+  name: templateset-controller
+  namespace: metacontroller
+spec:
+  generateSelector: true
+  parentResource:
+    apiVersion: templateset.keen.land/v1
+    resource: templatesets
+  childResources:
+  - apiVersion: v1
+    resource: pods
+    updateStrategy:
+      method: Recreate
+  - apiVersion: v1
+    resource: services
+    updateStrategy:
+      method: InPlace
+  hooks:
+    customize:
+      webhook:
+        url: http://templateset-webhook:8080/customize
+        timeout: 10s
+    sync:
+      webhook:
+        url: http://templateset-webhook:8080/sync
+        timeout: 10s
+  resyncPeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: templateset-webhook
+  namespace: metacontroller
+spec:
+  selector:
+    app: templateset-webhook
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: templateset-webhook
+  namespace: metacontroller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: templateset-webhook
+  template:
+    metadata:
+      labels:
+        app: templateset-webhook
+    spec:
+      imagePullSecrets:
+        - name: ghcr.io      
+      containers:
+      - name: templateset-webhook
+        image: ghcr.io/peterkeen/k8stuff/apps/template-set:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi

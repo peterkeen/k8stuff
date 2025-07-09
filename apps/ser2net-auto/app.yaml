@@ -5,6 +5,7 @@ metadata:
   namespace: iot-system
   labels:
     app: ser2net
+    keen.land/ds-service-per-pod: "true"
 spec:
   selector:
     matchLabels:
@@ -13,12 +14,14 @@ spec:
     metadata:
       labels:
         app: ser2net
+      annotations:
+        keen.land/ports: "generator:6636,waterfurnace:6637,zwave:6638,zigbee:6639"
     spec:
       nodeSelector:
         keen.land/serials: "true"
       volumes:
         - name: devices
-          hostPath:
+          hostPath: 
             path: /dev
       imagePullSecrets:
         - name: ghcr.io

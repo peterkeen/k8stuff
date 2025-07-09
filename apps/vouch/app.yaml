@@ -1,0 +1,115 @@
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: vouch-proxy-secrets
+spec:
+  itemPath: "vaults/fmycvdzmeyvbndk7s7pjyrebtq/items/dieeqsxqmvc6tfbjf3tse4csgq"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vouch-proxy
+  name: vouch-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vouch-proxy
+  template:
+    metadata:
+      labels:
+        app: vouch-proxy
+    spec:
+      containers:
+      - env:
+        - name: VOUCH_ALLOWALLUSERS
+          value: "true"
+        - name: VOUCH_COOKIE_DOMAIN
+          value: keen.land
+        - name: VOUCH_LISTEN
+          value: 0.0.0.0
+        - name: VOUCH_DOCUMENT_ROOT
+          value: /oauth2
+        - name: OAUTH_PROVIDER
+          value: oidc
+        - name: OAUTH_AUTH_URL
+          value: https://pocket-id.keen.land/api/oidc/token
+        - name: OAUTH_TOKEN_URL
+          value: https://pocket-id.keen.land/api/oidc/token
+        - name: OAUTH_USER_INFO_URL
+          value: https://pocket-id.keen.land/api/oidc/userinfo
+        - name: OAUTH_SCOPES
+          value: "openid email profile groups"
+        envFrom:
+          - secretRef:
+              name: vouch-proxy-secrets
+        image: quay.io/vouch/vouch-proxy:latest
+        imagePullPolicy: Always
+        name: vouch-proxy
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: vouch-proxy
+  name: vouch-proxy
+spec:
+  ports:
+  - name: http
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app: vouch-proxy
+
+# ---
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: vouch-proxy
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - host: __INGRESS_HOST__
+#     http:
+#       paths:
+#       - path: /oauth2
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: vouch-proxy
+#             port:
+#               number: 9090
+#   tls:
+#   - hosts:
+#     - __INGRESS_HOST__
+#     secretName: __INGRESS_SECRET__
+
+# ---
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/validate"
+#     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/login?url=$scheme://$http_host$request_uri"
+#   name: external-auth-oauth2
+#   namespace: kube-system
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - host: __INGRESS_HOST__
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: kubernetes-dashboard
+#             port:
+#               number: 80
