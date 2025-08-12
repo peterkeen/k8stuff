@@ -1,4 +1,5 @@
 controller:
+  replicaCount: 1
   ingressClassResource:
     name: nginx-public-fly
     controllerValue: k8s.io/ingress-nginx-public-fly
@@ -7,3 +8,19 @@ controller:
   labels:
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/enforce-version: latest
+  service:
+    type: ClusterIP
+  extraVolumes:
+    - name: wireguard-config
+      secret:
+        secretName: fly-ingress-wireguard-configs
+  extraContainers:
+    - name: fly-wireguard
+      image: lscr.io/linuxserver/wireguard:latest
+      volumeMounts:
+        - name: wireguard-config
+          mountPath: /config/wg_confs
+      securityContext:
+        privileged: true
+        capabilities:
+          add: ["NET_ADMIN", "SYS_MODULE"]

@@ -17,6 +17,10 @@ spec:
       annotations:
         keen.land/ports: "generator:6636,waterfurnace:6637,zwave:6638,zigbee:6639"
     spec:
+      tolerations:
+        - key: node-role.keen.land/iot-host
+          operator: Exists
+          effect: NoExecute
       nodeSelector:
         keen.land/serials: "true"
       volumes:

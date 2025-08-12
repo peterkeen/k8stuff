@@ -222,19 +222,6 @@ nodes:
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
 
-  - hostname: cloud-ord-1
-    ipAddress: 144.202.49.178
-    installDisk: /dev/vda
-    nodeLabels:
-      topology.kubernetes.io/zone: "ord-v"
-      cloud: true
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools
-
   - hostname: wyse-3040-9c0d
     ipAddress: 10.73.95.159
     installDisk: /dev/sda
@@ -281,41 +268,17 @@ nodes:
           interfaces:
             - enp1s0
 
-  # - hostname: wyse-3040-9855
-  #   ipAddress: 10.73.95.65
-  #   installDisk: /dev/sda
-  #   nodeLabels:
-  #     topology.kubernetes.io/zone: "home-1"
-  #     location: "garage"
-  #     keen.land/rfZone: "garage"
-  #   schematic:
-  #     customization:
-  #       systemExtensions:
-  #         officialExtensions:
-  #           - siderolabs/iscsi-tools
-  #           - siderolabs/util-linux-tools
-
-    # networkInterfaces:
-    #   - interface: br0
-    #     dhcp: true
-    #     bridge:
-    #       stp:
-    #         enabled: true
-    #       interfaces:
-    #         - enp1s0
-
-  - hostname: shed
-    ipAddress: 10.73.95.225
-    installDisk: /dev/sdb
+  - hostname: wyse-3040-9855
+    ipAddress: 10.73.95.112
+    installDisk: /dev/sda
     nodeLabels:
       topology.kubernetes.io/zone: "home-1"
-      location: "shed"
-      keen.land/rfZone: "shed"
+      location: "garage"
+      keen.land/rfZone: "garage"
     schematic:
       customization:
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915
             - siderolabs/iscsi-tools
             - siderolabs/util-linux-tools
 
@@ -327,3 +290,29 @@ nodes:
             enabled: true
           interfaces:
             - enp1s0
+
+  - hostname: wyse-3040-9588
+    ipAddress: 10.73.95.43
+    installDisk: /dev/sda
+    nodeLabels:
+      topology.kubernetes.io/zone: "home-1"
+      location: "shed"
+      keen.land/rfZone: "shed"
+      keen.land/serials: "true"
+    nodeTaints:
+      node-role.keen.land/iot-host: "true:NoExecute"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+
+    networkInterfaces:
+      - interface: br0
+        dhcp: true
+        bridge:
+          stp:
+            enabled: true
+          interfaces:
+            - enp1s0            

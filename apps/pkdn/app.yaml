@@ -6,7 +6,6 @@ metadata:
     app: pkdn
   annotations:
     keel.sh/policy: "force"
-    keel.sh/trigger: poll
     keel.sh/pollSchedule: "@every 5m"
     keel.sh/approvals: "0"
 spec:
@@ -22,7 +21,7 @@ spec:
       containers:
         - name: pkdn
           image: ghcr.io/peterkeen/site:main
-          imagePullPolicy: "Always"          
+          imagePullPolicy: "Always"
       imagePullSecrets:
         - name: ghcr.io
       affinity:
@@ -61,40 +60,13 @@ kind: Ingress
 metadata:
   name: pkdn-public
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-spec:
-  ingressClassName: nginx-public
-  tls:
-    - hosts:
-        - www.petekeen.net
-        - petekeen.net
-      secretName: public3-pkdn-ingress-cert
-  rules:
-    - host: www.petekeen.net
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: pkdn
-                port:
-                  number: 8000
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: pkdn-public-fly
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   ingressClassName: nginx-public-fly
   tls:
     - hosts:
         - www.petekeen.net
-      secretName: public3-pkdn-ingress-cert
+        - petekeen.net
   rules:
     - host: www.petekeen.net
       http:
@@ -106,61 +78,3 @@ spec:
                 name: pkdn
                 port:
                   number: 8000
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: pkdn-public-redirects
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rewrite-target: "https://www.petekeen.net$request_uri"
-spec:
-  ingressClassName: nginx-public
-  tls:
-    - hosts:
-        - www.petekeen.org
-        - petekeen.org
-        - www.petekeen.com
-        - petekeen.com
-        - www.peterkeen.com
-        - peterkeen.com
-        - www.pkn.me
-        - pkn.me
-        - www.bugsplat.info
-        - bugsplat.info
-        - www.bugsplat.org
-        - bugsplat.org
-      secretName: public-pkdn-redirect-ingress-cert
-  rules:
-    - host: www.petekeen.org
-      http: &pkdn_rules
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: pkdn
-                port:
-                  number: 8000
-    - host: petekeen.org
-      http: *pkdn_rules
-    - host: www.petekeen.com
-      http: *pkdn_rules
-    - host: petekeen.com
-      http: *pkdn_rules
-    - host: www.peterkeen.com
-      http: *pkdn_rules
-    - host: peterkeen.com
-      http: *pkdn_rules
-    - host: www.pkn.me
-      http: *pkdn_rules
-    - host: pkn.me
-      http: *pkdn_rules
-    - host: www.bugsplat.info
-      http: *pkdn_rules
-    - host: bugsplat.info
-      http: *pkdn_rules
-    - host: www.bugsplat.org
-      http: *pkdn_rules
-    - host: bugsplat.org
-      http: *pkdn_rules

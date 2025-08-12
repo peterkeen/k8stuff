@@ -16,7 +16,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: keel
-  namespace: kube-system  
+  namespace: kube-system
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
@@ -31,6 +31,35 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keel
+                port:
+                  number: 9300
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keel-webhooks
+  namespace: kube-system
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /v1/webhooks/github
+    external-dns.alpha.kubernetes.io/target: "66.241.125.38,2a09:8280:1:8968:d249:6201:cd71:c56b"    
+spec:
+  ingressClassName: nginx-public-fly
+  tls:
+    - hosts:
+        - keel-webhooks.keen.land
+      secretName: keenland-keel-ingress-cert
+  rules:
+    - host: keel-webhooks.keen.land
+      http:
+        paths:
+          - path: /github
             pathType: Prefix
             backend:
               service:
