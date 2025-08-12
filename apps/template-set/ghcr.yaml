@@ -1,8 +1,0 @@
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-type: kubernetes.io/dockerconfigjson
-metadata:
-  name: ghcr.io
-  namespace: localllama
-spec:
-  itemPath: "vaults/fmycvdzmeyvbndk7s7pjyrebtq/items/53gmfg3vpltilk2bcgn5i36hiq"
