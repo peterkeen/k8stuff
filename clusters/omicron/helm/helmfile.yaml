@@ -33,6 +33,8 @@ repositories:
   url: https://victoriametrics.github.io/helm-charts/
 - name: nats
   url: https://nats-io.github.io/k8s/helm/charts/
+- name: backube
+  url: https://backube.github.io/helm-charts/
 
 releases:
 
@@ -218,3 +220,7 @@ releases:
   chart: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
   version: 0.9.0
   namespace: default
+
+- name: volsync
+  chart: backube/volsync
+  namespace: volsync-system

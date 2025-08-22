@@ -37,5 +37,23 @@ spec:
           volumeMounts:
             - name: devices
               mountPath: /dev
+          resources:
+            requests:
+              memory: 16Mi
+            limits:
+              memory: 16Mi
       restartPolicy: Always
       hostNetwork: true
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: ser2net-auto
+  namespace: iot-system
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       DaemonSet
+    name:       ser2net
+  updatePolicy:
+    updateMode: "Off"

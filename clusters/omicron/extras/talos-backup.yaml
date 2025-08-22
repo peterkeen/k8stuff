@@ -29,6 +29,11 @@ spec:
             image: ghcr.io/siderolabs/talos-backup:latest
             workingDir: /tmp
             imagePullPolicy: IfNotPresent
+            resources:
+              requests:
+                memory: "64Mi"
+              limits:
+                memory: "64Mi"
             env:
               - name: AWS_ACCESS_KEY_ID
                 valueFrom:
