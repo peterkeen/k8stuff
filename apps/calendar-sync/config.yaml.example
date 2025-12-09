@@ -1,0 +1,9 @@
+entries:
+  - name: p.keen@guideline.com
+    magicString: __gdl_event__
+    timeZone: "America/Detroit"
+    summary: "Guideline Meeting"
+  - name: pete.keen@gusto.com
+    magicString: __gusto_event__
+    timeZone: "America/Detroit"
+    summary: "Gusto Meeting"
